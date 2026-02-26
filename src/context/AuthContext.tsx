@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function login(email:string,password: string) {
         await pb.collection("users").authWithPassword(email, password);
     }
-    function logout() {
+    async function logout() {
         pb.authStore.clear();
     }
     return(
