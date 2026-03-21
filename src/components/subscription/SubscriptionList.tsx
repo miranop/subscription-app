@@ -17,10 +17,6 @@ export function SubscriptionList(){
                 });
                 setSubscriptions(Lists.map(toSubscription));
             }catch(e){
-                if (e instanceof Error) {
-                    console.log('message:', e.message);
-                }
-                console.log('raw:', JSON.stringify(e));
                 setError("データの取得に失敗しました");
                 console.error(e);
             }finally{
