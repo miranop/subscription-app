@@ -1,0 +1,37 @@
+import { useState } from "react";
+import { LoginForm } from "../components/auth/LoginForm";
+import { SignupForm } from "../components/auth/SignupForm";
+
+export function AuthPage(){
+  const [isLogin, setIsLogin] = useState(true);
+
+  return(
+    <div>
+    {isLogin ? <LoginForm/> : <SignupForm/>}
+    <div className="mt-4 text-center text-sm">
+          {isLogin ? (
+            <p>
+              アカウントをお持ちでないですか？{' '}
+              <button 
+                onClick={() => setIsLogin(false)}
+                className="text-blue-500 hover:text-blue-600 font-medium"
+              >
+                新規登録
+              </button>
+            </p>
+          ) : (
+            <p>
+              アカウントをお持ちですか？{' '}
+              <button 
+                onClick={() => setIsLogin(true)}
+                className="text-blue-500 hover:text-blue-600 font-medium"
+              >
+                ログイン
+              </button>
+            </p>
+          )}
+        </div>
+  </div>
+  )
+  
+}
