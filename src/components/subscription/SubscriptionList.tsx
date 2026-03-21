@@ -2,6 +2,7 @@ import{ useEffect, useState } from "react";
 import { usePocket } from "../../context/AuthContext";
 import { toSubscription, type Subscription } from "../../types/subscription";
 import pb from "../../lib/pocketbase";
+import { SubscriptionCard } from "./SubscriptionCard";
 
 export function SubscriptionList(){
     const {user} = usePocket();
@@ -32,7 +33,7 @@ export function SubscriptionList(){
     return(
         <div>
             {subscriptions.map((sub) =>(
-                <div key={sub.id}>{sub.name}</div>
+                <SubscriptionCard key={sub.id} subscription={sub} />
             ))}
         </div>
     )
