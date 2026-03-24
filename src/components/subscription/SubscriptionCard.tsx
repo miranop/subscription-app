@@ -2,6 +2,8 @@ import type { Subscription } from '../../types/subscription';
 
 interface Props {
   subscription: Subscription;
+  onDelete: (id: string) => void;
+  onEdit: (subscription: Subscription) => void;
 }
 
 const billingCycleLabel: Record<string, string> = {
@@ -14,9 +16,9 @@ const statusColor: Record<string, string> = {
   active: 'bg-green-100 text-green-700',
   cancelled: 'bg-red-100 text-red-700',
   paused: 'bg-yellow-100 text-yellow-700',
-};
+}
 
-export function SubscriptionCard({ subscription }: Props) {
+export function SubscriptionCard({ subscription,onDelete,onEdit }: Props) {
   const formattedDate = new Date(subscription.next_billing_date).toLocaleDateString('ja-JP');
 
   return (
@@ -43,6 +45,20 @@ export function SubscriptionCard({ subscription }: Props) {
         <span className={`text-xs px-3 py-1 rounded-full ${statusColor[subscription.status]}`}>
           {subscription.status}
         </span>
+      </div>
+      <div className="mt-4 pt-3 border-t border-gray-100 flex gap-2">
+        <button
+          onClick={() => onEdit(subscription)}
+          className="flex-1 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 py-1.5 rounded-lg transition-colors"
+        >
+          編集
+        </button>
+        <button
+          onClick={() => onDelete(subscription.id)}
+          className="flex-1 text-sm text-red-400 hover:text-red-600 hover:bg-red-50 py-1.5 rounded-lg transition-colors"
+        >
+          削除
+        </button>
       </div>
     </div>
   );
