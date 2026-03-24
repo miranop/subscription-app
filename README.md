@@ -55,7 +55,7 @@ VITE_POCKETBASE_URL=ここに自分で用意したURLを入れる
 
 4. PocketBase を起動
 
-[PocketBase 公式サイト](https://pocketbase.io/) からバイナリをダウンロードして起動してください。
+PocketBase 公式サイト からバイナリをダウンロードして起動してください。
 
 ```bash
 ./pocketbase serve
