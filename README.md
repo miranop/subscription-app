@@ -1,73 +1,101 @@
-# React + TypeScript + Vite
+# サブスク管理アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+登録したサブスクリプションを一括管理できるWebアプリです。  
+登録済みのサブスク情報をもとに、AIに継続・解約の相談ができる機能も搭載予定です。
 
-Currently, two official plugins are available:
+## 機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- サブスクリプションの追加・編集・削除
+- 一覧表示（サービス名・金額・次回請求日・カテゴリ・ステータス）
+- AIへの相談機能（実装予定）
+- ブラウザの拡張機能で所定のタブが開かれている時間を収集する機能(実装予定)
 
-## React Compiler
+## 技術スタック
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| 役割           | 技術                        |
+| -------------- | --------------------------- |
+| フロントエンド | React / TypeScript / Vite   |
+| スタイリング   | Tailwind CSS                |
+| バックエンド   | PocketBase                  |
+| デプロイ       | Cloudflare Tunnel / Proxmox |
 
-## Expanding the ESLint configuration
+## セットアップ
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 必要なもの
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js
+- PocketBase
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 手順
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. リポジトリをクローン
+
+```bash
+git clone <git@github.com:miranop/subscription-app.git>
+cd subscription-manager
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. 依存関係をインストール
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+3. 環境変数を設定
+
+```bash
+cp .env.example .env
+```
+
+`.env` を編集して PocketBase の URL を設定してください。
+
+```env
+VITE_POCKETBASE_URL=ここに自分で用意したURLを入れる
+```
+
+4. PocketBase を起動
+
+[PocketBase 公式サイト](https://pocketbase.io/) からバイナリをダウンロードして起動してください。
+
+```bash
+./pocketbase serve
+```
+
+5. PocketBase のコレクションを設定
+
+管理画面（`http://localhost:8090/_/`）から以下のコレクションを作成してください。
+
+**subscription コレクション**
+
+| フィールド名      | 型       | 備考                                                        |
+| ----------------- | -------- | ----------------------------------------------------------- |
+| name              | text     | サービス名                                                  |
+| price             | number   | 金額（円）                                                  |
+| billing_cycle     | select   | monthly / yearly / weekly                                   |
+| next_billing_date | date     | 次回請求日                                                  |
+| category          | select   | entertainment / productivity / development / health / other |
+| status            | select   | active / cancelled / paused                                 |
+| notes             | text     | メモ                                                        |
+| user              | relation | users コレクションへのリレーション                          |
+
+**API ルール（subscription）**
+
+| ルール      | 設定値                       |
+| ----------- | ---------------------------- |
+| リスト/検索 | `@request.auth.id = user.id` |
+| 表示        | `@request.auth.id = user.id` |
+| 作成        | `@request.auth.id != ""`     |
+| 更新        | `@request.auth.id = user.id` |
+| 削除        | `@request.auth.id = user.id` |
+
+6. 開発サーバーを起動
+
+```bash
+npm run dev
+```
+
+## 今後の実装予定
+
+- AIへの相談機能（サブスク情報をもとに継続・解約を提案）
+- 月ごとの支出サマリー表示
+- ハンバーガーメニュー対応（モバイル）
