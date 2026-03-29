@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { LoginForm } from "../components/auth/LoginForm";
 import { SignupForm } from "../components/auth/SignupForm";
+import { usePocket } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 export function AuthPage(){
+  const { user } = usePocket();
   const [isLogin, setIsLogin] = useState(true);
+
+  if(user){
+    return <Navigate to="/"/>
+  }
 
   return(
     <div>
