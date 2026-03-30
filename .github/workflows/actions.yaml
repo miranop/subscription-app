@@ -16,7 +16,7 @@ jobs:
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_PRIVATE_KEY}}
           script: |
-            cd /var/sub/subscription-manager
+            cd /var/sub/subscription-app
             git pull
             npm install
             npm run build
